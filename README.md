@@ -1,16 +1,16 @@
-# Angular Project Boilerplate
+# FED Boilerplate
 
 ## Dependencies
 
 * [Node.js](http://nodejs.org/)
 * [NPM](https://npmjs.org/) - Node Package Manager
-* [Bower](http://bower.io/) - Web Package manager
 * [Grunt](http://gruntjs.com/) - JavaScript Task Runner
 * [Sass 3.3](http://sass-lang.com/) - CSS Preprocessor
 
 ## Nice to Have
 
 * [EditorConfig](http://editorconfig.org/) - EditorConfig helps developers define and maintain consistent coding styles between different editors and IDEs.
+* [Bower](http://bower.io/) - Web Package manager
 
 ## Getting started
 
@@ -20,10 +20,13 @@ Edit the **meta.title** & **meta.description** fields in `build.config.js`. Thes
 
 ### Install Dependencies
 
-Run the follow from the root of this project:
+Run the following from the root of this project:
 
     $ npm install
-    $ bower install
+
+#### Hey, what about Bower?
+
+Bower is great, and I do use it install front-end packages. However, Bower packages tend to come with a lot of baggage - README files, tests, and other things that we don't want to clog up our application with. In addition, some necessary packages aren't available via bower. (Modernizr being the main example.) For these reason, I've found it necessary to explicitly define all vendor files that need to be used in an app (See 'Adding or removing 3rd party front-end libraries') and commit those files to version control. So, use of Bower is encouraged, but not required.
 
 ## Get to Work
 
