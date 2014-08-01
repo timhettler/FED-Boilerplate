@@ -1,0 +1,126 @@
+// http://nicolasgallagher.com/micro-clearfix-hack/
+@mixin clearfix () {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+@mixin position ($top: null, $right: null, $bottom: null, $left: null) {
+    @if (type-of($top) != "null") {
+        top: $top;
+    }
+    @if (type-of($right) != "null") {
+        right: $right;
+    }
+    @if (type-of($bottom) != "null") {
+        bottom: $bottom;
+    }
+    @if (type-of($left) != "null") {
+        left: $left;
+    }
+}
+
+@mixin absolute-position ($args...) {
+    @include pos($args...);
+    position: absolute;
+}
+
+@mixin fixed-position ($args...) {
+    @include pos($args...);
+    position: fixed;
+}
+
+// Modification of http://signalvnoise.com/posts/3271-easy-retina-ready-images-using-scss
+@mixin image-2x ($image, $size:cover) {
+  @media (min--moz-device-pixel-ratio: 1.3),
+         (-o-min-device-pixel-ratio: 2.6/2),
+         (-webkit-min-device-pixel-ratio: 1.3),
+         (min-device-pixel-ratio: 1.3),
+         (min-resolution: 1.3dppx) {
+    background-image: url($image);
+    background-size: $size;
+  }
+}
+
+@mixin ellipsis () {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+//*
+// Replaces text with a background-image.
+// This technique is known as "Kellum Image Replacement". See: http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/
+// @param {Number, Boolean} $width. The width of the element.
+// @param {Number, Boolean} $height Optional. The height of the element. If ommitted, is set to $width.
+// @param {String, Boolean} $bg-image Optional. The background-image of the element.
+
+@mixin text-replace($width, $height:$width, $bg-img:null) {
+    @if (type-of($bg-img) != "null") { background-image: $bg-img; }
+    height: $height;
+    overflow: hidden;
+    text-align: left;
+    text-indent: 100%;
+    white-space: nowrap;
+    width: $width;
+}
+
+//*
+// Adds an arrow to a side of an element, making it appear like a dialog box.
+// Adapted from: http://cssarrowplease.com/
+// @param {Number} $size The size of the arrow.
+// @param {Color} $bg-color The color of the arrow.
+// @param {String} $position Which side of the element the arrow should be placed on. Accepted values are "top", "left", "bottom", and "right".
+// @param {Number} $border-width Optional. The width of the arrow's border.
+// @param {Color} $border-color Optional. The color of the arrow's border.
+@mixin put-an-arrow-on-it($size, $bg-color, $position:bottom, $border-width:0, $border-color:transparent) {
+    $arrowPosition: (
+        bottom: top,
+        left: right,
+        right: left,
+        top: bottom
+    );
+    $arrowProperty: map-get($arrowPosition, $position);
+    $borderProperty: if($position == top or $position == bottom, left, top);
+
+    &:after,
+    &:before {
+        #{$arrowProperty}: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    &:after {
+        border-#{$arrowProperty}-color: $bg-color;
+        border-width: $size;
+        #{$borderProperty}: 50%;
+        margin-#{$borderProperty}: $size * -1;
+    }
+
+    @if $border-width > 0 {
+
+      &:before {
+        border-#{$arrowProperty}-color: $border-color;
+        border-width: $size + $border-width;
+        #{$borderProperty}: 50%;
+        margin-#{$borderProperty}: ($size + $border-width) * -1;
+      }
+
+    }
+}
+
+//*
+// Disables text selection and the on iOS devices that displays information about a link.
+@mixin disable-selection() {
+  user-select: none; //disables text selection
+  -webkit-touch-callout: none; //disables callout on iOS devices that displays information about the link
+}
