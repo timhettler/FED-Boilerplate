@@ -26,7 +26,7 @@ Run the following from the root of this project:
 
 #### Hey, what about Bower?
 
-Bower is great, and I do use it install front-end packages. However, Bower packages tend to come with a lot of baggage - README files, tests, and other things that we don't want to clog up our application with. In addition, some necessary packages aren't available via bower. (Modernizr being the main example.) For these reason, I've found it necessary to explicitly define all vendor files that need to be used in an app (See 'Adding or removing 3rd party front-end libraries') and commit those files to version control. So, use of Bower is encouraged, but not required.
+Bower is great, and I do use it install front-end packages. However, Bower packages tend to come with a lot of baggage - README files, tests, and other things that we don't want to clog up our application with. In addition, some necessary packages aren't available via bower. (Modernizr being the main example.) For these reasons, I've found it necessary to explicitly define all vendor files that need to be used in an app and commit those files to version control. (See 'Adding or removing 3rd party front-end libraries') So, use of Bower is encouraged, but not required.
 
 ## Get to Work
 
