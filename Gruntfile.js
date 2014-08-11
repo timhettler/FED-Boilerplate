@@ -30,6 +30,7 @@ var taskConfig = {
                     ],
                     // Project-specific files
                     app: [
+                        '<%= build_dir %>/js/app.module.js',
                         '<%= build_dir %>/js/**/*.js',
                         '<%= html2js.app.dest %>'
                     ]
@@ -161,6 +162,7 @@ var taskConfig = {
         },
         js_app: {
             src: [
+                '<%= build_dir %>/js/app.module.js',
                 '<%= build_dir %>/js/**/*.js',
                 '<%= html2js.app.dest %>'
             ],

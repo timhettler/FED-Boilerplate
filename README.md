@@ -16,7 +16,7 @@
 
 ### Update Project Info
 
-Edit the **meta.title** & **meta.description** fields in `build.config.js`. These values are used for the TITLE & META DESCRIPTION in your project's HTML file.
+Edit the **meta.title** & **meta.description** fields in `app.config.js`. These values are used for the TITLE & META DESCRIPTION in your project's HTML file.
 
 ### Install Dependencies
 
@@ -53,15 +53,22 @@ Use [Chrome DevTool's Emulation feature](https://developer.chrome.com/devtools/d
 ## General Code Style Guidelines
 
 ### General
-* Browser support is IE 9+. 
+* Browser support is IE 9+.
 
-### CSS
+### Workspace
+* All development should be done in the `src` directory.
+* SVG files in `src/assets/svg` will be concatenated into a single file using [Grunt SVG Store](https://github.com/FWeinb/grunt-svgstore)
+* All AngularJS templates should be placed in`src/templates`. [Grunt HTML2JS](https://github.com/karlgoldstein/grunt-html2js) converts these tempaltes to JavaScript and assembles them into an Angular module that primes the cache directly when the module is loaded, which reduces the number of HTTP requests the application needs to make.
+
+### CSS/SCSS
 * Use a namespace for all CSS classes. (Ex. ".namespace-section")
 * The class-names should be loosely [BEM](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)-based, but don't stress out about it.
 * All z-index values are defined in `src/sass/_zIndex.scss`. Please don't define z-Index vlaues elsewhere.
 * Vendor prefixes are added with the 'autoprefixer' build script. There's no need to write them out by hand or use mixins.
+* When importing a Sass partial, include the entire path, e.g. "utilities/_mixins.scss", not "utilities/mixins";
 
 ### JS
+* Follow the `name.type.js` naming convention.
 * jQuery is not used in this project. AngularJS uses jqLite, a tiny, API-compatible subset of jQuery. See the [documentation for angular.element](https://docs.angularjs.org/api/ng/function/angular.element) for more info, and [You Might Not Need jQuery](http://youmightnotneedjquery.com/) for solutions to common problems.
 
 ## Packages Not Included But May Prove Useful in Certain Circumstances
