@@ -3,6 +3,6 @@
 
 /* App Module */
 
-angular.module('app', ['templates-app']);
+angular.module('app', ['ngRoute', 'templates-app']);
 
 })( window, document );

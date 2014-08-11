@@ -205,6 +205,11 @@ var taskConfig = {
             tasks: [ 'htmlbuild:build' ]
         },
 
+        views: {
+            files: ['src/views/*.html'],
+            tasks: [ 'copy:build_views' ]
+        },
+
         tpls: {
             files: [
                 '<%= app_files.atpl %>'
@@ -296,6 +301,16 @@ var taskConfig = {
                 src: [ 'fonts/**', 'images/**' ],
                 dest: '<%= build_dir %>/assets/',
                 cwd: 'src/assets',
+                expand: true
+            }
+       ]
+      },
+      build_views: {
+        files: [
+            {
+                src: [ '**' ],
+                dest: '<%= build_dir %>/views/',
+                cwd: 'src/views',
                 expand: true
             }
        ]
@@ -457,16 +472,9 @@ grunt.registerTask( 'default', [ 'server' ] );
 
 grunt.registerTask('build', [
     'clean:build', 'jshint:src', 'html2js',
-    'copy:build_assets', 'svgstore', 'copy:build_data', 'copy:build_appjs', 'copy:build_vendor',
-    'sass:build', 'autoprefixer:build', 'htmlbuild:build'
-]);
-
-grunt.registerTask('noclean', [
-    'jshint:src', 'html2js',
-    'newer:copy:build_assets', 'newer:copy:build_data', 'newer:copy:build_appjs', 'newer:copy:build_vendor',
+    'copy:build_assets', 'svgstore', 'copy:build_data', 'copy:build_appjs', 'copy:build_vendor', 'copy:build_views',
     'ngAnnotate',
-    'sass:build', 'autoprefixer:build',
-    'htmlbuild:build'
+    'sass:build', 'autoprefixer:build', 'htmlbuild:build'
 ]);
 
 grunt.registerTask('compile', [
