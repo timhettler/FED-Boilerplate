@@ -7,7 +7,7 @@ var appConfig = require( './app.config.js' );
 
 var taskConfig = {
 
-    // Grunt HTML Builder
+    // HTML Builder
     // Appends scripts and styles, Removes debug parts, append html partials, Template options
     // https://github.com/spatools/grunt-html-build
     htmlbuild: {
@@ -16,10 +16,10 @@ var taskConfig = {
             dest: '<%= build_dir %>',
             options: {
                 parseTag: 'build',
-                beautify: false,
+                beautify: true,
                 relative: true,
                 scripts: {
-                    // Modernizr need to go in HEAD
+                    // Modernizr needs to go in HEAD
                     modernizr: ['<%= build_dir %>/vendor/modernizr.js'],
                     // Define order-dependent files first, then glob
                     vendor: [
@@ -38,7 +38,7 @@ var taskConfig = {
                 },
                 styles: {
                     vendor: [
-                        '<%= build_dir %>/css/vendor/**/*.css'
+                        '<%= build_dir %>/vendor/**/*.css'
                     ],
                     app: [
                         '<%= build_dir %>/css/**/*.css'
@@ -46,9 +46,9 @@ var taskConfig = {
                 },
                 // Project meta-data (defined in './app.config.js')
                 data: {
-                    title: "<%= meta.title %>",
-                    description: "<%= meta.description %>",
-                    viewport: "<%= meta.viewport %>"
+                    title: '<%= meta.title %>',
+                    description: '<%= meta.description %>',
+                    viewport: '<%= meta.viewport %>'
                 },
             }
         },
@@ -71,7 +71,7 @@ var taskConfig = {
         }
     },
 
-    // Grunt Clean
+    // Clean
     // Clean files and folders.
     // https://github.com/gruntjs/grunt-contrib-clean
     clean: {
@@ -100,17 +100,18 @@ var taskConfig = {
         }
     },
 
-    // grunt-html2js
+    // HTML2JS
     // Converts AngularJS templates to JavaScript
     // https://github.com/karlgoldstein/grunt-html2js
     html2js: {
-      app: {
-        src: [ '<%= app_files.atpl %>' ],
-        dest: '<%= build_dir %>/js/templates-app.js'
-      }
+        options: { quoteChar: '\'' },
+        app: {
+            src: [ '<%= app_files.atpl %>' ],
+            dest: '<%= build_dir %>/js/templates-app.js'
+        }
     },
 
-    // Grunt JS Hint
+    // JS Hint
     // You know it, you hate it. Validate files with JSHint.
     // https://github.com/gruntjs/grunt-contrib-jshint
     jshint: {
@@ -124,23 +125,41 @@ var taskConfig = {
             newcap: true,
             quotmark: 'single',
             trailing: true,
-            undef: true,
-            unused: true,
+            // undef: true,
             curly: true,
             immed: true,
             noarg: true,
             sub: true,
             browser: true,
+            devel: true,
             debug: true,
             globals: {
                 angular: true
             }
         },
-        src: '<%= app_files.js %>',
-        gruntfile: 'Gruntfile.js'
+        build: '<%= app_files.js %>',
+        compile: {
+            options: {
+                unused: true,
+                //devel: false,
+                debug: false
+            },
+            files: {
+                src: '<%= build_dir %>/js'
+            }
+        },
+        gruntfile: {
+            options : {
+                camelcase: false,
+                node: true
+            },
+            files: {
+                src: ['Gruntfile.js']
+            }
+        }
     },
 
-    // Grunt Concat
+    // Concat
     // Concatenate files.
     // https://github.com/gruntjs/grunt-contrib-concat
     concat: {
@@ -187,7 +206,7 @@ var taskConfig = {
 
         js_src: {
             files: ['<%= app_files.js %>'],
-            tasks: [ 'newer:copy:build_appjs' ]
+            tasks: [ 'jshint:build', 'newer:copy:build_appjs', 'htmlbuild:build' ]
         },
 
         assets: {
@@ -219,14 +238,20 @@ var taskConfig = {
 
         sass: {
             files: [ '<%= app_files.styles %>' ],
-            tasks: [ 'css' ]
+            tasks: [ 'sass:build', 'autoprefixer:build', 'htmlbuild:build' ]
         }
     },
 
-    // Grunt Uglify
+    // Uglify
     // Minify files with UglifyJS.
     // https://github.com/gruntjs/grunt-contrib-uglify
     uglify: {
+        options: {
+            //beautify: true
+            compress: {
+                drop_console: true
+            }
+        },
         compile: {
             files: {
                 '<%= concat.js_vendor.dest %>': '<%= concat.js_vendor.dest %>',
@@ -235,7 +260,7 @@ var taskConfig = {
         }
     },
 
-    // Grunt Sass
+    // Sass
     // Compile Sass to CSS
     // https://github.com/gruntjs/grunt-contrib-sass
     sass: {
@@ -255,7 +280,7 @@ var taskConfig = {
         compile: {
             options: {
                 'style': 'compressed',
-                'sourcemap': true,
+                'sourcemap': false,
                 'loadPath': ['vendor', 'src/sass/']
             },
             files: [{
@@ -268,7 +293,7 @@ var taskConfig = {
         }
     },
 
-    // Grunt Autoprefixer
+    // Autoprefixer
     // Parses CSS and adds vendor-prefixed CSS properties using the Can I Use database.
     // https://github.com/nDmitry/grunt-autoprefixer
     autoprefixer: {
@@ -280,30 +305,41 @@ var taskConfig = {
         }
     },
 
-    // Grunt CSS Min
+    // CSS Min
     // Compress CSS files.
     // https://github.com/gruntjs/grunt-contrib-cssmin
     cssmin: {
         compile: {
             expand: true,
             cwd: '<%= compile_dir %>/css/',
-            src: ['**/*.css']
+            src: ['**/*.css'],
+            dest: '<%= compile_dir %>/css/',
         }
     },
 
-    // Grunt copy
+    // Copy
     // Copy files and folders.
     // https://github.com/gruntjs/grunt-contrib-copy
     copy: {
       build_assets: {
         files: [
             {
-                src: [ 'fonts/**', 'images/**' ],
+                src: [ '!svg/**', '**' ],
                 dest: '<%= build_dir %>/assets/',
                 cwd: 'src/assets',
                 expand: true
             }
        ]
+      },
+      compile_assets: {
+        files: [
+            {
+                src: [ '**' ],
+                dest: '<%= compile_dir %>/assets',
+                cwd: '<%= build_dir %>/assets',
+                expand: true
+            }
+        ]
       },
       build_views: {
         files: [
@@ -315,15 +351,15 @@ var taskConfig = {
             }
        ]
       },
-      compile_assets: {
+      compile_views: {
         files: [
             {
-                src: [ 'fonts/**', 'images/**' ],
-                dest: '<%= compile_dir %>/assets',
-                cwd: 'src/assets',
+                src: [ '**' ],
+                dest: '<%= compile_dir %>/views/',
+                cwd: '<%= build_dir %>/views',
                 expand: true
             }
-        ]
+       ]
       },
       build_data: {
         files: [
@@ -340,7 +376,7 @@ var taskConfig = {
             {
                 src: [ '**' ],
                 dest: '<%= compile_dir %>/data',
-                cwd: 'src/data',
+                cwd: '<%= build_dir %>/data',
                 expand: true
             }
         ]
@@ -373,7 +409,7 @@ var taskConfig = {
       }
     },
 
-    // Grunt ImageMin
+    // ImageMin
     // Minify PNG, JPEG and GIF images
     // https://github.com/gruntjs/grunt-contrib-imagemin
     imagemin: {
@@ -387,7 +423,7 @@ var taskConfig = {
         }
     },
 
-    // Grunt Modernizr
+    // Modernizr
     // Sifts through your project files, gathers up your references to Modernizr tests and outputs a lean, mean Modernizr machine.
     // https://github.com/Modernizr/grunt-modernizr
     modernizr: {
@@ -395,17 +431,17 @@ var taskConfig = {
             devFile: 'vendor/modernizr/modernizr.js',
             outputFile: '<%= compile_dir %>/js/modernizr.js',
             extra : {
-                "shiv" : false, // Only need shiv if we've supporting IE < 9
+                'shiv' : false, // Only need shiv if we've supporting IE < 9
             },
             extensibility : {
-                "addtest" : false,
-                "prefixed" : true,
-                "teststyles" : false,
-                "testprops" : true,
-                "testallprops" : true,
-                "hasevents" : false,
-                "prefixes" : false,
-                "domprefixes" : false
+                'addtest' : false,
+                'prefixed' : true,
+                'teststyles' : false,
+                'testprops' : true,
+                'testallprops' : true,
+                'hasevents' : false,
+                'prefixes' : false,
+                'domprefixes' : false
             },
             parseFiles: true,
             files: {
@@ -414,27 +450,27 @@ var taskConfig = {
         }
     },
 
-    // Grunt Express
+    // Express
     // Runs an Express Server
     // https://github.com/blai/grunt-express
     express: {
         dev: {
             options: {
-                hostname: "localhost",
+                hostname: 'localhost',
                 port: 9000,
                 bases: '<%= build_dir %>'
             }
         },
         compile: {
             options: {
-                hostname: "localhost",
+                hostname: 'localhost',
                 port: 9000,
                 bases: '<%= compile_dir %>'
             }
         }
     },
 
-    // Grunt Open
+    // Open
     // Opens the web server in the browser
     // https://github.com/jsoverson/grunt-open
     open: {
@@ -446,7 +482,7 @@ var taskConfig = {
       }
     },
 
-    // Grunt SVG Store
+    // SVG Store
     // Merge svgs from a folder
     // https://github.com/FWeinb/grunt-svgstore
     svgstore: {
@@ -459,11 +495,58 @@ var taskConfig = {
             },
         },
     },
+
+    // Git Hooks
+    // A Grunt plugin to help bind Grunt tasks to Git hooks
+    // https://github.com/wecodemore/grunt-githooks
+    githooks: {
+        all: {
+            'pre-commit': 'jshint:build'
+        }
+    },
+
+    // HTML Min
+    // Minify HTML
+    // https://github.com/gruntjs/grunt-contrib-htmlmin
+    htmlmin: {
+        options: {
+            removeComments: true,
+            collapseWhitespace: true,
+            //conservativeCollapse: true,
+            collapseBooleanAttributes: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            caseSensitive: true
+        },
+        compile: {
+            files: [{
+                expand: true,
+                cwd: '<%= compile_dir %>',
+                src: ['**/*.html'],
+                dest: '<%= compile_dir %>'
+            }]
+        }
+    },
+
+    // Favicons
+    // Generate favicon.ico and icons for iOS, Android and WP8
+    // https://github.com/gleero/grunt-favicons
+    favicons: {
+        options: {
+            html: '<%= compile_dir %>/index.html',
+            HTMLPrefix: "assets/favicons/",
+            windowsTile: false
+        },
+        icons: {
+            src: '<%= app_files.favicon %>',
+            dest: '<%= compile_dir %>/assets/favicons/'
+        }
+    }
 };
 
 grunt.initConfig( grunt.util._.extend( taskConfig, appConfig ) );
 
-grunt.registerTask( 'server', [ 'build', 'express:dev', 'open:dev', 'watch' ] );
+grunt.registerTask( 'server', [ 'githooks', 'build', 'express:dev', 'open:dev', 'watch' ] );
 grunt.registerTask( 'ncserver', [ 'noclean', 'express:dev', 'watch' ] );
 grunt.registerTask( 'noserver', [ 'build', 'watch' ] );
 grunt.registerTask( 'dist', [ 'build', 'compile' ] );
@@ -471,20 +554,23 @@ grunt.registerTask( 'distserver', [ 'noclean', 'compile', 'express:compile', 'op
 grunt.registerTask( 'default', [ 'server' ] );
 
 grunt.registerTask('build', [
-    'clean:build', 'jshint:src', 'html2js',
-    'copy:build_assets', 'svgstore', 'copy:build_data', 'copy:build_appjs', 'copy:build_vendor', 'copy:build_views',
+    'clean:build', 'jshint:build', 'html2js',
+    'svgstore',
+    'copy:build_assets', 'copy:build_data', 'copy:build_appjs', 'copy:build_vendor', 'copy:build_views',
     'ngAnnotate',
     'sass:build', 'autoprefixer:build', 'htmlbuild:build'
 ]);
 
 grunt.registerTask('compile', [
-    'clean:compile',
-    'copy:compile_assets', 'copy:compile_data',
+    'clean:compile', 'jshint:compile',
+    'copy:compile_assets', 'copy:compile_data', 'copy:compile_views',
     'imagemin:compile',
-    'sass:compile', 'autoprefixer:compile', 'cssmin:compile',
-    'concat',
+    'sass:compile', 'autoprefixer:compile',
+    'concat', 'cssmin:compile',
     'uglify',
-    'modernizr', 'htmlbuild:compile'
+    'modernizr',
+    'htmlbuild:compile',
+    'htmlmin:compile'
 ]);
 
 

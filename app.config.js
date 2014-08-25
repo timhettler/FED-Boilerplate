@@ -17,6 +17,7 @@ module.exports = {
         images: ['src/assets/images/**/*'],
         data: ['src/data/**/*'],
         styles: ['src/sass/**/*'],
+        favicon: ['src/assets/images/favicon.png']
     },
 
     vendor_files: {
