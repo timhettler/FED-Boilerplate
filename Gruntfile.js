@@ -30,7 +30,7 @@ var taskConfig = {
                     ],
                     // Project-specific files
                     app: [
-                        '<%= build_dir %>/js/app.module.js',
+                        '<%= build_dir %>/js/<%= app_files.main %>',
                         '<%= build_dir %>/js/**/*.js',
                         '<%= html2js.app.dest %>'
                     ]
@@ -168,10 +168,11 @@ var taskConfig = {
         },
         js_vendor: {
             src: [
-                '<%= vendor_files.js %>',
+                '<%= build_dir %>/vendor/**/*.js',
                 '!**/modernizr.js'
             ],
             dest: '<%= compile_dir %>/js/vendor.js'
+
         },
         css_vendor: {
             src: [
@@ -181,7 +182,7 @@ var taskConfig = {
         },
         js_app: {
             src: [
-                '<%= build_dir %>/js/app.module.js',
+                '<%= build_dir %>/js/<%= app_files.main %>',
                 '<%= build_dir %>/js/**/*.js',
                 '<%= html2js.app.dest %>'
             ],
@@ -206,7 +207,7 @@ var taskConfig = {
 
         js_src: {
             files: ['<%= app_files.js %>'],
-            tasks: [ 'jshint:build', 'newer:copy:build_appjs', 'htmlbuild:build' ]
+            tasks: [ 'jshint:build', 'newer:copy:build_appjs' ]
         },
 
         assets: {
@@ -238,7 +239,7 @@ var taskConfig = {
 
         sass: {
             files: [ '<%= app_files.styles %>' ],
-            tasks: [ 'sass:build', 'autoprefixer:build', 'htmlbuild:build' ]
+            tasks: [ 'sass:build', 'autoprefixer:build' ]
         }
     },
 
@@ -297,6 +298,10 @@ var taskConfig = {
     // Parses CSS and adds vendor-prefixed CSS properties using the Can I Use database.
     // https://github.com/nDmitry/grunt-autoprefixer
     autoprefixer: {
+        options: {
+            map: true, // Use and update the sourcemap
+            browsers: ["last 2 versions", "> 1%", "Explorer 10"]
+        },
         build: {
             src: '<%= build_dir %>/css/**/*.css',
         },
@@ -557,20 +562,20 @@ grunt.registerTask('build', [
     'clean:build', 'jshint:build', 'html2js',
     'svgstore',
     'copy:build_assets', 'copy:build_data', 'copy:build_appjs', 'copy:build_vendor', 'copy:build_views',
-    'ngAnnotate',
     'sass:build', 'autoprefixer:build', 'htmlbuild:build'
 ]);
 
 grunt.registerTask('compile', [
     'clean:compile', 'jshint:compile',
     'copy:compile_assets', 'copy:compile_data', 'copy:compile_views',
-    'imagemin:compile',
+    'ngAnnotate',
     'sass:compile', 'autoprefixer:compile',
     'concat', 'cssmin:compile',
     'uglify',
     'modernizr',
     'htmlbuild:compile',
-    'htmlmin:compile'
+    'htmlmin:compile',
+    'imagemin:compile'
 ]);
 
 

@@ -10,11 +10,10 @@ module.exports = {
     },
 
     app_files: {
+        main: ['app.module.js'],
         js: ['src/js/**/*.js'],
         atpl: [ 'src/templates/*.tpl.html' ],
         html: ['src/*.html'],
-        fonts: ['src/assets/fonts/**/*'],
-        images: ['src/assets/images/**/*'],
         data: ['src/data/**/*'],
         styles: ['src/sass/**/*'],
         favicon: ['src/assets/images/favicon.png']
