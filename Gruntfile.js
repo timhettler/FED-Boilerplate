@@ -206,31 +206,49 @@ var taskConfig = {
         },
 
         js_src: {
+            options: {
+              livereload: true
+            },
             files: ['<%= app_files.js %>'],
             tasks: [ 'jshint:build', 'newer:copy:build_appjs' ]
         },
 
         assets: {
+            options: {
+              livereload: true
+            },
             files: ['src/assets/**/*'],
             tasks: [ 'newer:copy:build_assets' ]
         },
 
         data: {
+            options: {
+              livereload: true
+            },
             files: ['<%= app_files.data %>'],
             tasks: [ 'newer:copy:build_data' ]
         },
 
         html: {
+            options: {
+              livereload: true
+            },
             files: [ '<%= app_files.html %>' ],
             tasks: [ 'htmlbuild:build' ]
         },
 
         views: {
+            options: {
+              livereload: true
+            },
             files: ['src/views/*.html'],
             tasks: [ 'copy:build_views' ]
         },
 
         tpls: {
+            options: {
+              livereload: true
+            },
             files: [
                 '<%= app_files.atpl %>'
             ],
@@ -238,6 +256,9 @@ var taskConfig = {
         },
 
         sass: {
+            options: {
+              livereload: true
+            },
             files: [ '<%= app_files.styles %>' ],
             tasks: [ 'sass:build', 'autoprefixer:build' ]
         }
@@ -262,13 +283,13 @@ var taskConfig = {
     },
 
     // Sass
-    // Compile Sass to CSS
-    // https://github.com/gruntjs/grunt-contrib-sass
+    // Compile Sass to CSS (with libsass)
+    // https://github.com/sindresorhus/grunt-sass
     sass: {
         build: {
             options: {
                 'sourcemap': true,
-                'loadPath': ['vendor', 'src/sass/']
+                'includePaths': ['vendor']
             },
             files: [{
                 expand: true,
@@ -282,7 +303,7 @@ var taskConfig = {
             options: {
                 'style': 'compressed',
                 'sourcemap': false,
-                'loadPath': ['vendor', 'src/sass/']
+                'includePaths': ['vendor']
             },
             files: [{
                 expand: true,
@@ -300,7 +321,7 @@ var taskConfig = {
     autoprefixer: {
         options: {
             map: true, // Use and update the sourcemap
-            browsers: ["last 2 versions", "> 1%", "Explorer 10"]
+            browsers: ['last 2 versions', 'ie 9']
         },
         build: {
             src: '<%= build_dir %>/css/**/*.css',
@@ -400,7 +421,7 @@ var taskConfig = {
         files: [
             {
                 src: '<%= vendor_files.js %>',
-                dest: '<%= build_dir %>/vendor',
+                dest: '<%= build_dir %>',
                 expand: true,
                 flatten: true
             },
@@ -455,36 +476,32 @@ var taskConfig = {
         }
     },
 
-    // Express
-    // Runs an Express Server
-    // https://github.com/blai/grunt-express
-    express: {
-        dev: {
-            options: {
-                hostname: 'localhost',
-                port: 9000,
-                bases: '<%= build_dir %>'
-            }
+    // Connect
+    // Start a static web server
+    // https://github.com/gruntjs/grunt-contrib-connect
+    connect : {
+        options: {
+          port: 9000,
+          livereload: 35729,
+          // change this to '0.0.0.0' to access the server from outside
+          hostname: 'localhost'
+        },
+        livereload: {
+          options: {
+            open: true,
+            base: [
+              '<%= build_dir %>'
+            ]
+          }
         },
         compile: {
             options: {
-                hostname: 'localhost',
-                port: 9000,
-                bases: '<%= compile_dir %>'
+                open: true,
+                base: [
+                  '<%= compile_dir %>'
+                ]
             }
         }
-    },
-
-    // Open
-    // Opens the web server in the browser
-    // https://github.com/jsoverson/grunt-open
-    open: {
-      dev: {
-        path: 'http://localhost:<%= express.dev.options.port %>'
-      },
-      compile: {
-        path: 'http://localhost:<%= express.compile.options.port %>'
-      }
     },
 
     // SVG Store
@@ -539,7 +556,7 @@ var taskConfig = {
     favicons: {
         options: {
             html: '<%= compile_dir %>/index.html',
-            HTMLPrefix: "assets/favicons/",
+            HTMLPrefix: 'assets/favicons/',
             windowsTile: false
         },
         icons: {
@@ -551,11 +568,11 @@ var taskConfig = {
 
 grunt.initConfig( grunt.util._.extend( taskConfig, appConfig ) );
 
-grunt.registerTask( 'server', [ 'githooks', 'build', 'express:dev', 'open:dev', 'watch' ] );
-grunt.registerTask( 'ncserver', [ 'noclean', 'express:dev', 'watch' ] );
+grunt.registerTask( 'server', [ 'githooks', 'build', 'connect:livereload', 'watch' ] );
+grunt.registerTask( 'ncserver', [ 'noclean', 'connect:dev', 'watch' ] );
 grunt.registerTask( 'noserver', [ 'build', 'watch' ] );
 grunt.registerTask( 'dist', [ 'build', 'compile' ] );
-grunt.registerTask( 'distserver', [ 'noclean', 'compile', 'express:compile', 'open:compile', 'watch' ] );
+grunt.registerTask( 'distserver', [ 'noclean', 'compile', 'connect:compile', 'watch' ] );
 grunt.registerTask( 'default', [ 'server' ] );
 
 grunt.registerTask('build', [

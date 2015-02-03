@@ -1,11 +1,12 @@
 # FED Boilerplate
 
+A template for building SPAs with AngularJS & Sass.
+
 ## Dependencies
 
 * [Node.js](http://nodejs.org/)
 * [NPM](https://npmjs.org/) - Node Package Manager
 * [Grunt](http://gruntjs.com/) - JavaScript Task Runner
-* [Sass 3.3](http://sass-lang.com/) - CSS Preprocessor
 
 ## Nice to Have
 
@@ -23,10 +24,11 @@ Edit the **meta.title** & **meta.description** fields in `app.config.js`. These 
 Run the following from the root of this project:
 
     $ npm install
+    $ bower install
 
-#### Hey, what about Bower?
+### Why are there 2 folders for 3rd-party Web Packages?
 
-Bower is great, and I do use it install front-end packages. However, Bower packages tend to come with a lot of baggage - README files, tests, and other things that we don't want to clog up our application with. In addition, some necessary packages aren't available via bower. (Modernizr being the main example.) For these reasons, I've found it necessary to explicitly define all vendor files that need to be used in an app and commit those files to version control. (See 'Adding or removing 3rd party front-end libraries') So, use of Bower is encouraged, but not required.
+`vendor` is for packages that aren't available through bower. Both `vendor` & `bower_components` ultimately get put into the projects `vendor` folder. The main difference is that `bower_components` isn't committed to to repo.
 
 ## Get to Work
 
@@ -34,15 +36,15 @@ Start the Grunt watch command:
 
     $ grunt server
 
-This will automatically rebuild the project in the `build` directory when changes are detected in the `src` directory.
+This will automatically rebuild the project in the `build` directory when changes are detected in the `src` directory, and reload any open pages.
 
 ## Adding or removing 3rd party front-end libraries
 
 1. Include library files
 
-Use `bower install --save` or copy the files directly to the `vendor` directory.
+Use `bower install --save` or copy files directly to the `vendor` directory.
 
-2. Add main files to project config.
+2. Add main library files to project config.
 
 Update the `vendor_files` of `app.config.js` to include the main file of the project library.
 
@@ -58,12 +60,12 @@ Use [Chrome DevTool's Emulation feature](https://developer.chrome.com/devtools/d
 ### Workspace
 * All development should be done in the `src` directory.
 * SVG files in `src/assets/svg` will be concatenated into a single file using [Grunt SVG Store](https://github.com/FWeinb/grunt-svgstore)
-* All AngularJS templates should be placed in`src/templates`. [Grunt HTML2JS](https://github.com/karlgoldstein/grunt-html2js) converts these tempaltes to JavaScript and assembles them into an Angular module that primes the cache directly when the module is loaded, which reduces the number of HTTP requests the application needs to make.
+* All AngularJS templates should be placed in`src/templates`. [Grunt HTML2JS](https://github.com/karlgoldstein/grunt-html2js) converts these templates to JavaScript and assembles them into an Angular module that primes the cache directly when the module is loaded, which reduces the number of HTTP requests the application needs to make.
 
 ### CSS/SCSS
 * Use a namespace for all CSS classes. (Ex. ".namespace-section")
 * The class-names should be loosely [BEM](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)-based, but don't stress out about it.
-* All z-index values are defined in `src/sass/_zIndex.scss`. Please don't define z-Index vlaues elsewhere.
+* All z-index values are defined in `src/sass/_zIndex.scss`. Please don't define z-Index values elsewhere.
 * Vendor prefixes are added with the 'autoprefixer' build script. There's no need to write them out by hand or use mixins.
 * When importing a Sass partial, include the entire path, e.g. "utilities/_mixins.scss", not "utilities/mixins";
 

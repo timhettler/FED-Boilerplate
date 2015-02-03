@@ -13,7 +13,7 @@
     "vendor"
   ],
   "dependencies": {
-    "angular": "~1.2.21",
-    "angular-route": "~1.2.21"
+    "angular": "latest",
+    "angular-route": "latest"
   }
 }

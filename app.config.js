@@ -22,8 +22,8 @@ module.exports = {
     vendor_files: {
         js: [
             'vendor/modernizr/modernizr.js',
-            'vendor/angular/angular.js',
-            'vendor/angular-route/angular-route.js'
+            'bower_components/angular/angular.js',
+            'bower_components/angular-route/angular-route.js'
         ],
         css: []
     }
