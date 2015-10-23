@@ -1,8 +1,8 @@
-(function ( window, document, undefined ) {
+(function (window, document, undefined) {
 'use strict';
 
 /* App Module */
 
 angular.module('app', ['ngRoute', 'templates-app']);
 
-})( window, document );
+})(window, document);
