@@ -1,31 +1,49 @@
 %fullscreen {
-    height: 100%;
-    overflow: hidden;
-    width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
+%fullsize-child {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 %rds--button {
-    background-color: transparent;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font: {
-        size: inherit;
-        family: inherit;
-    }
-    -webkit-font-smoothing: inherit;
-    margin: 0;
-    outline: none;
-    padding: 0;
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  -webkit-font-smoothing: inherit;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+  text-align: inherit;
+  padding: 0;
 }
 
 %rds--input {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    font: inherit;
-    margin: 0;
-    outline: none;
-    padding: 0;
-    text-transform: inherit;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  font: inherit;
+  margin: 0;
+  outline: none;
+  padding: 0;
+  text-transform: inherit;
+}
+
+%large-text {
+  -webkit-font-smoothing: antialiased;
+  font-weight: bold;
+  letter-spacing: -0.045em;
+  line-height: 0.8400em;
+  text-rendering: optimizeLegibility;
+  text-transform: uppercase;
+  word-spacing: -0.05em;
 }

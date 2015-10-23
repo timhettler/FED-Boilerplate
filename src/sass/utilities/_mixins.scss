@@ -10,28 +10,20 @@
     }
 }
 
-@mixin position ($top: null, $right: null, $bottom: null, $left: null) {
-    @if (type-of($top) != "null") {
-        top: $top;
-    }
-    @if (type-of($right) != "null") {
-        right: $right;
-    }
-    @if (type-of($bottom) != "null") {
-        bottom: $bottom;
-    }
-    @if (type-of($left) != "null") {
-        left: $left;
-    }
+@mixin position ($top: null, $left: null, $bottom: null, $right: null) {
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
 }
 
 @mixin absolute-position ($args...) {
-    @include pos($args...);
+    @include position($args...);
     position: absolute;
 }
 
 @mixin fixed-position ($args...) {
-    @include pos($args...);
+    @include position($args...);
     position: fixed;
 }
 
@@ -60,8 +52,8 @@
 // @param {Number, Boolean} $height Optional. The height of the element. If ommitted, is set to $width.
 // @param {String, Boolean} $bg-image Optional. The background-image of the element.
 
-@mixin text-replace($width, $height:$width, $bg-img:null) {
-    @if (type-of($bg-img) != "null") { background-image: $bg-img; }
+@mixin text-replace($width:null, $height:$width, $bg-img:null) {
+    background-image: $bg-img;
     height: $height;
     overflow: hidden;
     text-align: left;
@@ -123,4 +115,100 @@
 @mixin disable-selection() {
   user-select: none; //disables text selection
   -webkit-touch-callout: none; //disables callout on iOS devices that displays information about the link
+}
+
+@mixin ratioHeight ($height-ratio:1) {
+  overflow: hidden;
+  position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    padding-bottom: percentage($height-ratio);
+  }
+}
+
+
+@mixin cover () {
+  @include absolute-position(50%, 50%);
+  max-height: none;
+  max-width: none;
+  // adding extra percentage to account for rounding errors
+  min-height: 101%;
+  min-width: 101%;
+  transform: translate(-50%,-50%);
+}
+
+@mixin contain () {
+  @include absolute-position(50%, 50%);
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translate(-50%,-50%);
+  width: auto;
+}
+
+@mixin fpo() {
+  //@warn "FPO elements being used.";
+  $color: rgb(random(255), random(255), random(255));
+  background-color: $color;
+  color: contrast-color($color);
+  position: relative;
+
+  &:after {
+    @include absolute-position(50%, 50%);
+    content: 'FPO';
+    font: bold 20px/1 sans-serif;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@mixin breakpoint($media-queries...) {
+  $query-list: ();
+  @each $query in $media-queries {
+    $string: "(" + nth($query,1) + ":" + nth($query,2) + ")";
+    @if (length($query-list) != 0) {
+      $string: "and " + $string;
+    }
+    $query-list: append($query-list, unquote($string));
+  }
+
+  @media #{$query-list} {
+    @content;
+  }
+}
+
+@mixin horizontal-center ($position: absolute) {
+  position: $position;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin vertical-center ($position: absolute) {
+  position: $position;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin center ($position: absolute) {
+  position: $position;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin set-text($font-size, $font-family:null, $font-color:null) {
+  @if ($font-size > 19px) {
+    @extend %large-text;
+  }
+
+  color: $font-color; // null values don't get output to css
+  font-size: $font-size;
+  font-family: $font-family;
+
+  @if (type-of($font-color) == 'color') {
+    @if (lightness($font-color) > 30%) {
+      -webkit-font-smoothing: antialiased;
+    }
+  }
 }
